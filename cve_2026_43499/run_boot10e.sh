@@ -136,19 +136,66 @@ fi
 # 设置可执行权限
 chmod 755 "$EXPLOIT" 2>/dev/null
 if [ ! -x "$EXPLOIT" ]; then
-    print_msg "[!] 无法设置执行权限, 尝试复制到 /data/local/tmp"
-    cp "$EXPLOIT" /data/local/tmp/exploit 2>/dev/null
-    if [ -f /data/local/tmp/exploit ]; then
-        chmod 755 /data/local/tmp/exploit 2>/dev/null
-        EXPLOIT="/data/local/tmp/exploit"
-        SCRIPT_DIR="/data/local/tmp"
-        print_msg "[+] 已复制到 /data/local/tmp"
-    else
-        print_msg "[-] 无法复制到 /data/local/tmp"
-        print_msg "[-] 请尝试手动操作:"
-        print_msg "[-]   cp exploit /data/local/tmp/"
-        print_msg "[-]   chmod 755 /data/local/tmp/exploit"
-        print_msg "[-]   cd /data/local/tmp && sh run_boot10e.sh"
+    print_msg "[!] 无法设置执行权限 (noexec 文件系统)"
+    
+    # 尝试多个可执行目录
+    EXEC_DIRS=""
+    
+    # 1. Termux home (如果有 Termux)
+    TERMUX_HOME="/data/data/com.termux/files/home"
+    if [ -d "$TERMUX_HOME" ] && [ -w "$TERMUX_HOME" ]; then
+        EXEC_DIRS="$EXEC_DIRS $TERMUX_HOME/cve_2026_43499"
+    fi
+    
+    # 2. Termux tmp
+    if [ -d "/data/data/com.termux/files/usr/tmp" ] && [ -w "/data/data/com.termux/files/usr/tmp" ]; then
+        EXEC_DIRS="$EXEC_DIRS /data/data/com.termux/files/usr/tmp"
+    fi
+    
+    # 3. /data/local/tmp (需要 shell 权限)
+    EXEC_DIRS="$EXEC_DIRS /data/local/tmp"
+    
+    # 4. $HOME/.local/bin
+    if [ -n "$HOME" ] && [ "$HOME" != "/" ]; then
+        EXEC_DIRS="$EXEC_DIRS $HOME/.local/bin"
+    fi
+    
+    # 5. $TMPDIR
+    if [ -n "$TMPDIR" ] && [ -d "$TMPDIR" ]; then
+        EXEC_DIRS="$EXEC_DIRS $TMPDIR"
+    fi
+    
+    COPIED=0
+    for DIR in $EXEC_DIRS; do
+        mkdir -p "$DIR" 2>/dev/null
+        if cp "$EXPLOIT" "$DIR/exploit" 2>/dev/null; then
+            chmod 755 "$DIR/exploit" 2>/dev/null
+            if [ -x "$DIR/exploit" ]; then
+                EXPLOIT="$DIR/exploit"
+                print_msg "[+] 已复制到 $DIR"
+                COPIED=1
+                break
+            else
+                rm -f "$DIR/exploit" 2>/dev/null
+            fi
+        fi
+    done
+    
+    if [ "$COPIED" = "0" ]; then
+        print_msg "[-] 无法复制到可执行目录"
+        print_msg ""
+        print_msg "解决方案:"
+        print_msg ""
+        print_msg "方案1: 安装 Termux (推荐)"
+        print_msg "  打开 Termux, 运行:"
+        print_msg "    pkg install curl"
+        print_msg "    curl -sL https://raw.githubusercontent.com/1332915/-10e-/main/cve_2026_43499/install_termux.sh | sh"
+        print_msg "    cd ~/cve_2026_43499 && sh run_boot10e.sh -t"
+        print_msg ""
+        print_msg "方案2: 用 ADB (需要电脑)"
+        print_msg "  adb push exploit /data/local/tmp/"
+        print_msg "  adb shell chmod 755 /data/local/tmp/exploit"
+        print_msg "  adb shell /data/local/tmp/exploit"
         exit 1
     fi
 fi
