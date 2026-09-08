@@ -1,0 +1,76 @@
+{
+ "kernel": "4.9.117+ third-party (MT6765)",
+ "text_base": "0xc0008000",
+ "symbols": {
+  "selinux_enforcing": {
+   "type": "B",
+   "addr": "0xc20a65dc",
+   "off_text": "0x0209e5dc"
+  },
+  "selinux_enabled": {
+   "type": "D",
+   "addr": "0xc1649314",
+   "off_text": "0x01641314"
+  },
+  "init_task": {
+   "type": "D",
+   "addr": "0xc1616840",
+   "off_text": "0x0160e840"
+  },
+  "init_cred": {
+   "type": "D",
+   "addr": "0xc161dcc0",
+   "off_text": "0x01615cc0"
+  },
+  "kptr_restrict": {
+   "type": "D",
+   "addr": "0xc160d514",
+   "off_text": "0x01605514"
+  },
+  "commit_creds": {
+   "type": "T",
+   "addr": "0xc0156654",
+   "off_text": "0x0014e654"
+  },
+  "prepare_kernel_cred": {
+   "type": "T",
+   "addr": "0xc0156af4",
+   "off_text": "0x0014eaf4"
+  },
+  "kallsyms_lookup_name": {
+   "type": "T",
+   "addr": "0xc0221570",
+   "off_text": "0x00219570"
+  },
+  "modprobe_path": {
+   "type": "D",
+   "addr": "0xc161d418",
+   "off_text": "0x01615418"
+  },
+  "security_hook_heads": {
+   "type": "D",
+   "addr": "0xc164730c",
+   "off_text": "0x0163f30c"
+  },
+  "kmalloc_caches": {
+   "type": "B",
+   "addr": "0xc209194c",
+   "off_text": "0x0208994c"
+  },
+  "anon_pipe_buf_ops": {
+   "type": "d",
+   "addr": "0xc0f12bd4",
+   "off_text": "0x00f0abd4"
+  },
+  "rt_mutex_adjust_pi": {
+   "type": "T",
+   "addr": "0xc01cba10",
+   "off_text": "0x001c3a10"
+  },
+  "sysctl_sched_rt_period": {
+   "type": "D",
+   "addr": "0xc161e170",
+   "off_text": "0x01616170"
+  }
+ }
+}
