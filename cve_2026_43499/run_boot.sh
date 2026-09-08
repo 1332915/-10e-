@@ -148,6 +148,14 @@ while [ $# -gt 0 ]; do
             ;;
         -s)
             USE_SELINUX=1
+            if [ $# -gt 1 ]; then
+                case "$2" in
+                    0x*)
+                        shift
+                        SELINUX_SYM="$1"
+                        ;;
+                esac
+            fi
             shift
             ;;
         -k)
@@ -166,8 +174,16 @@ done
 
 if [ "$USE_SELINUX" = "1" ]; then
     if [ -n "$SELINUX_SYM" ]; then
-        ARGS="$ARGS -s $SELINUX_SYM"
-        print_msg "[*] 使用 selinux_enforcing 试验模式: $SELINUX_SYM"
+        case "$SELINUX_SYM" in
+            0x*)
+                ARGS="$ARGS -s $SELINUX_SYM"
+                print_msg "[*] 使用手动地址: $SELINUX_SYM"
+                ;;
+            *)
+                ARGS="$ARGS -s $SELINUX_SYM"
+                print_msg "[*] 使用 kallsyms 地址: $SELINUX_SYM"
+                ;;
+        esac
     else
         print_msg "[-] 未获取到 selinux_enforcing 地址, 无法使用 -s"
         print_msg "[-] 可手动: sh run.sh -s 0x<地址>"
