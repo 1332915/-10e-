@@ -346,9 +346,13 @@ print_msg "[*] 命令: $EXPLOIT $ARGS"
 print_msg "============================================"
 print_msg ""
 
-# 运行并保存日志 (修正退出码: 用 PIPESTATUS 获取 exploit 的真实退出码)
-"$EXPLOIT" $ARGS 2>&1 | tee "$LOG_FILE"
-REAL_EXIT=${PIPESTATUS[0]:-$?}
+# 运行并保存日志 (修正退出码: 用临时文件避免 PIPESTATUS 兼容问题)
+LOG_TMP="$SCRIPT_DIR/.exploit_output.tmp"
+"$EXPLOIT" $ARGS > "$LOG_TMP" 2>&1
+REAL_EXIT=$?
+cat "$LOG_TMP"
+cp "$LOG_TMP" "$LOG_FILE" 2>/dev/null
+rm -f "$LOG_TMP" 2>/dev/null
 
 # 诊断信号
 SIGNAL=""
