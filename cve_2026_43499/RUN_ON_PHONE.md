@@ -2,7 +2,7 @@
 ## 华为畅享 20e (MLD-AL10, MT6765, Android 10) — Exploit v2.1
 
 > 最后更新: 2026-09-09
-> 版本: v2.8 (根因-EINVAL: 对照实验 FUTEX_WAIT 被 spurious wake 无限 goto retry 残留无 rt_waiter waiter 在 f_wait 桶致 CMP 配对检查 -EINVAL; DIAG 移末尾独立变量; 触发链只留 WAIT 重试+CMP 重试)
+> 版本: v2.9 (诊断版: CMP 失败后 FUTEX_WAKE(nr=0) 无损探测 f_wait/f_pi_target/f_pi_chain 三桶, 区分 -EINVAL 来源 = f_pi_target 残留 PI waiter(attach_to_pi_state) vs requeue_pi_key 不匹配 vs 死锁环未建立; waiter 补 ts 超时值打印)
 > 提交: 见 git log
 
 ---
