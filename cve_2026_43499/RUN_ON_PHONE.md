@@ -2,7 +2,7 @@
 ## 华为畅享 20e (MLD-AL10, MT6765, Android 10) — Exploit v2.1
 
 > 最后更新: 2026-09-09
-> 版本: v2.2 (修复时钟源: gettimeofday+REALTIME, 修复立即超时)
+> 版本: v2.3 (修复 ARM32 32位整数溢出: gettimeofday 秒级加法构造超时)
 > 提交: 见 git log
 
 ---
@@ -37,7 +37,7 @@ cd ~/cve_2026_43499
 curl -L -o exploit https://raw.githubusercontent.com/1332915/-10e-/main/cve_2026_43499/exploit
 curl -L -o run_boot.sh https://raw.githubusercontent.com/1332915/-10e-/main/cve_2026_43499/run_boot.sh
 chmod 755 exploit run_boot.sh
-sha256sum exploit    # 必须 = d36a8fc17bcf760760cd3dcb2dd5c65ccdfa93865dfec95d973ae20a5fe4781e
+sha256sum exploit    # 必须 = 38838497b774e04f3ddf6355f16d89ae6cae49aa797109cdb3ecabdae5833b91
 ```
 
 > 若 sha256 不符，是 GitHub raw 缓存，加 `?x=$(date +%s)` 再下载一次。
