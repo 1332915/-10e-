@@ -2,7 +2,7 @@
 ## 华为畅享 20e (MLD-AL10, MT6765, Android 10) — Exploit v2.1
 
 > 最后更新: 2026-09-09
-> 版本: v2.5 (诊断版: 修 CLOCK_MONOTONIC 超时语义 - 4.14 futex_wait_requeue_pi 硬编码 MONOTONIC 忽略 REALTIME; 加 f_wait/f_pi_target/cgt_ret 全链路诊断; CMP 前等待 20ms→200ms)
+> 版本: v2.6 (对照实验: 普通 FUTEX_WAIT(500ms) 验证 futex+时钟+超时机制, WAIT_REQUEUE_PI 前后打印 sigsys_hit 排除 seccomp)
 > 提交: 见 git log
 
 ---
