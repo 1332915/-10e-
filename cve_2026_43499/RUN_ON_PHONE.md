@@ -2,7 +2,7 @@
 ## 华为畅享 20e (MLD-AL10, MT6765, Android 10) — Exploit v2.1
 
 > 最后更新: 2026-09-09
-> 版本: v2.6 (对照实验: 普通 FUTEX_WAIT(500ms) 验证 futex+时钟+超时机制, WAIT_REQUEUE_PI 前后打印 sigsys_hit 排除 seccomp)
+> 版本: v2.7 (根因: Android freezer spurious wake 致 WAIT_REQUEUE_PI 立即 -11; waiter 重试 WAIT x8 + main 重试 CMP x10; main 等待 1s 覆盖对照实验; 日志换行修复)
 > 提交: 见 git log
 
 ---

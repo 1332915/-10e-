@@ -5,7 +5,7 @@
 
 cd ~/cve_2026_43499 2>/dev/null || { echo "[!] cd 失败, 请先创建 ~/cve_2026_43499"; exit 1; }
 
-EXP_HASH="2932cc749d63653c45c9fe38d86a4e6e17cadd0c2c5c68a452782aa02953903e"
+EXP_HASH="f664da2b7a70c655b87ad13c0eab9bc93377e5066c5cb41747b29b86ec96cbbe"
 
 # 多通道 (commit 113a552 = v2.5):
 # 1. jsDelivr CDN (国内一般可达)
