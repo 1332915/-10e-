@@ -1,9 +1,9 @@
 #!/system/bin/sh
 # ============================================================
-# CVE-2026-43499 ARM32 Exploit v2 - Termux 运行脚本 v2 - Termux 版
+# CVE-2026-43499 ARM32 Exploit v3.0.1 - Termux 运行脚本 v3.0.1
 # 目标: 华为畅享20e (MLD-AL10, MT6765, 内核 4.14.141+)
 #
-# v2 变更:
+# v3 变更:
 #   - 触发方式重写为 3 线程 + FUTEX_CMP_REQUEUE_PI 死锁回滚
 #     (对齐官方修复补丁 3bfdc63936dd 描述的漏洞路径)
 #   - 新增用户态伪锁"泄露验证"模式 (默认): 链行走只写用户内存,
@@ -44,7 +44,7 @@ print_msg() {
 
 print_msg ""
 print_msg "============================================"
-print_msg " CVE-2026-43499 ARM32 Exploit v2"
+print_msg " CVE-2026-43499 ARM32 Exploit v3.0.1"
 print_msg " Target: MT6765 (Huawei Changxiang 20e)"
 print_msg " Trigger: 3-thread CMP_REQUEUE_PI deadlock"
 print_msg "============================================"

@@ -1,5 +1,5 @@
 # CVE-2026-43499 (GhostLock) 手机端运行步骤
-## 华为畅享 20e (MLD-AL10, MT6765, Android 10) — Exploit v2.1
+## 华为畅享 20e (MLD-AL10, MT6765, Android 10) — Exploit v3.0.1
 
 > 最后更新: 2026-09-09
 > 版本: v2.9 (诊断版: CMP 失败后 FUTEX_WAKE(nr=0) 无损探测 f_wait/f_pi_target/f_pi_chain 三桶, 区分 -EINVAL 来源 = f_pi_target 残留 PI waiter(attach_to_pi_state) vs requeue_pi_key 不匹配 vs 死锁环未建立; waiter 补 ts 超时值打印)
@@ -30,7 +30,7 @@ cat /sys/fs/selinux/enforce          # 1=Enforcing(目标), 0=Permissive(已放�
 
 ---
 
-## 2. 更新到 v2.1（覆盖旧二进制）
+## 2. 更新到 v3.0.1（覆盖旧二进制）
 
 ```sh
 cd ~/cve_2026_43499
@@ -52,7 +52,7 @@ sha256sum exploit    # 必须 = 6676881cbafa1691572f29a914ddcc8d99f1f76f2664db41
 sh run_boot.sh
 ```
 
-**v2.1 新日志（关键看这 4 行 + 末尾）：**
+**v3.0.1 新日志（关键看这 4 行 + 末尾）：**
 
 ```
 [*] main: CMP_REQUEUE_PI ret=ffffffdd    ← -35=EDEADLK: 漏洞路径命中!
@@ -83,7 +83,7 @@ sh run_boot.sh -s 0xC211E598    # offsets.json 的 4.14.141 值(未验证, 仅�
 
 ---
 
-## 4. 故障排查（v2.1）
+## 4. 故障排查（v3.0.1）
 
 | # | 现象 | 原因/对策 |
 |---|---|---|
@@ -129,7 +129,7 @@ SELinux 变 Permissive 后，按此顺序准备提权：
 
 ---
 
-## 7. 原理摘要（v2 触发链，已对照 4.14 源码逐行核实）
+## 7. 原理摘要（v3 触发链，已对照 4.14 源码逐行核实）
 
 ```
 owner:   LOCK_PI(f_pi_target) → LOCK_PI(f_pi_chain)   [阻塞]
