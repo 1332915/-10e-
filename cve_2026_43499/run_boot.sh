@@ -213,7 +213,7 @@ print_msg "[*] 提示: 应先运行 'sh run.sh -t' 验证 UAF 触发"
 print_msg "[*] 默认模式不写任何内核地址 (用户态伪锁), 安全"
 print_msg ""
 
-"$EXPLOIT" $ARGS 2>&1 | tee "$LOG_FILE"
+"$EXPLOIT" $ARGS -L "$LOG_FILE" 2>&1 | tee "$LOG_FILE"
 EXIT_CODE=$?
 
 print_msg ""
