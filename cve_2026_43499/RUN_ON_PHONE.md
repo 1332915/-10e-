@@ -1,8 +1,8 @@
 # CVE-2026-43499 (GhostLock) 手机端运行步骤
-## 华为畅享 20e (MLD-AL10, MT6765, Android 10) — Exploit v3.0.1
+## 华为畅享 20e (MLD-AL10, MT6765, Android 10) — Exploit v3.2
 
 > 最后更新: 2026-09-09
-> 版本: v3.1 (修复: SIGSYS sigsetsize 128→8 — ARM32 sigset_t 只有 8 字节, 原值导致 handler 从未注册, seccomp 杀 syscall 时进程直接死; stamp_all 的 off 步进 32→4 穷举 rt_waiter 栈内对齐; 新增 -T 参数指定 fake task 地址 — 默认 0xDEAD2000 用户态, PAN 开启时 walk 解引用用户地址会 oops, 可试内核 init_task 地址)
+> 版本: v3.2 (修复: SIGSYS sigsetsize 128→8 — ARM32 sigset_t 只有 8 字节, 原值导致 handler 从未注册, seccomp 杀 syscall 时进程直接死; stamp_all 的 off 步进 32→4 穷举 rt_waiter 栈内对齐; 新增 -T 参数指定 fake task 地址 — 默认 0xDEAD2000 用户态, PAN 开启时 walk 解引用用户地址会 oops, 可试内核 init_task 地址)
 > 提交: 见 git log / 二进制 hash 6b0c96b7b92cb67c6d0c5209febbbb3aaad2e1702d858bc6919d4753536a0762
 > 提交: 见 git log
 
