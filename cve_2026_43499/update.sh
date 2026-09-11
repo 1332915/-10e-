@@ -1,5 +1,5 @@
 #!/system/bin/sh
-# ── CVE-2026-43499 项目更新脚本 v3.2.1 ──
+# ── CVE-2026-43499 项目更新脚本 v3.2.5 ──
 # 用法: sh update.sh
 # 更新内容 (一次性全部更新):
 #   exploit          (二进制, 强制 sha256 校验)
@@ -51,6 +51,7 @@ fi
 # ── 2) 更新运行脚本 (下载 + 关键标记校验, 失败保留原文件) ──
 echo ""
 echo "[*] 更新运行脚本 (run_boot.sh / run.sh / run_boot10e.sh)..."
+script_fail=0
 for f in run_boot.sh run.sh run_boot10e.sh; do
     ok=0
     for u in "${BASE}/${f}" "${BACKUP_BASE}/${f}"; do
@@ -70,6 +71,7 @@ for f in run_boot.sh run.sh run_boot10e.sh; do
         rm -f "${f}.new"
     done
     if [ "$ok" = "0" ]; then
+        script_fail=1
         echo "[!] $f 更新失败, 保留原文件 (不影响 exploit 使用)"
     fi
 done
@@ -81,3 +83,12 @@ sha256sum exploit
 echo "[*] 运行脚本: $(ls -la run_boot.sh 2>/dev/null | awk '{print $5}' 2>/dev/null || echo '?') bytes"
 echo "[*] 运行: sh run_boot.sh   (全模式)"
 echo "[*]        sh run_boot.sh -t   (先验证触发)"
+
+# ── 4) 退出逻辑: 运行脚本未全部更新成功则以非 0 退出, 便于调用方感知 ──
+if [ "$script_fail" = "1" ]; then
+    echo ""
+    echo "[!] 运行脚本未全部更新成功 (exploit 已是最新, 可正常使用)."
+    echo "    请手动下载失败的脚本放入 ~/cve_2026_43499/ 并 chmod 755, 或稍后重试: sh update.sh"
+    exit 1
+fi
+exit 0
