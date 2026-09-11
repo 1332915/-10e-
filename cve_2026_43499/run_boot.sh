@@ -44,7 +44,7 @@ print_msg() {
 
 print_msg ""
 print_msg "============================================"
-print_msg " CVE-2026-43499 ARM32 Exploit v3.1"
+print_msg " CVE-2026-43499 ARM32 Exploit v3.2"
 print_msg " Target: MT6765 (Huawei Changxiang 20e)"
 print_msg " Trigger: 3-thread CMP_REQUEUE_PI deadlock"
 print_msg "============================================"
