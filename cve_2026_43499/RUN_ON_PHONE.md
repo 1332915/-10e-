@@ -31,17 +31,19 @@ cat /sys/fs/selinux/enforce          # 1=Enforcing(目标), 0=Permissive(已放�
 
 ---
 
-## 2. 更新到 v3.2.1（覆盖旧二进制）
+## 2. 更新到 v3.2.1（一条命令更新 exploit + 全部运行脚本）
 
 ```sh
 cd ~/cve_2026_43499
-curl -L -o exploit https://raw.githubusercontent.com/1332915/-10e-/main/cve_2026_43499/exploit
-curl -L -o run_boot.sh https://raw.githubusercontent.com/1332915/-10e-/main/cve_2026_43499/run_boot.sh
-chmod 755 exploit run_boot.sh
-sha256sum exploit    # 必须 = 6676881cbafa1691572f29a914ddcc8d99f1f76f2664db410156bef7b508d15c
+curl -sL --connect-timeout 12 -o update.sh https://cdn.jsdelivr.net/gh/1332915/-10e-@b524938/cve_2026_43499/update.sh
+sh update.sh
 ```
 
-> 若 sha256 不符，是 GitHub raw 缓存，加 `?x=$(date +%s)` 再下载一次。
+update.sh 会自动完成：
+- 更新 `exploit`（sha256 强制校验 = `38c707677a931d52bd3e521e26c6139cf94825fae56e400a93f6423f8f73fea9`，旧版备份为 exploit.bak）
+- 更新 `run_boot.sh` / `run.sh` / `run_boot10e.sh`（带关键标记校验，失败保留原文件）
+
+> 若 CDN 返回旧版，等 1 分钟后重跑，或加 `?x=$(date +%s)` 再下载一次 update.sh。
 
 ---
 
